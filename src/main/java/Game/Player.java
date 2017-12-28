@@ -1,9 +1,76 @@
 package Game;
 
-public class Player {
+import Server.Hub;
+
+import java.io.Serializable;
+
+public class Player implements Serializable{
     private String username;
     private String password;
     private Integer rank;
-    private Integer wins;
-    private Integer losts;
+    private Double wins;
+    private Double losses;
+    private Hub hub;
+
+    public Player(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.rank = 5;
+        this.wins = 0.0;
+        this.losses = 0.0;
+        this.hub = new Hub();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public Double getWins() {
+        return wins;
+    }
+
+    public void setGameOutcome(Boolean outcome) { //true in case of win, false otherwise
+        if (outcome) {
+            this.wins++;
+
+        } else {
+            this.losses++;
+        }
+        Double totalGames = this.wins + this.losses;
+        Double ratio = this.wins / this.losses;
+        ratio*=10;
+        this.rank = ratio.intValue();
+    }
+
+    public Double getLosses() {
+        return losses;
+    }
+
+    public Boolean auth(String password) {
+        return this.password.equals(password);
+    }
+
+    public void resetHub() {
+        this.hub.reset();
+    }
+
+    public String readMessage() throws InterruptedException {
+        return this.hub.read();
+    }
 }
