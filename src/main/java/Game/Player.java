@@ -3,6 +3,7 @@ package Game;
 import Server.Hub;
 
 import java.io.Serializable;
+import java.util.TreeSet;
 
 public class Player implements Serializable{
     private String username;
@@ -11,6 +12,7 @@ public class Player implements Serializable{
     private Double wins;
     private Double losses;
     private Hub hub;
+    private TreeSet<Integer> matchLog;
 
     public Player(String username, String password) {
         this.username = username;
@@ -19,6 +21,7 @@ public class Player implements Serializable{
         this.wins = 0.0;
         this.losses = 0.0;
         this.hub = new Hub();
+        this.matchLog = new TreeSet<>();
     }
 
     public String getUsername() {
@@ -45,7 +48,7 @@ public class Player implements Serializable{
         return wins;
     }
 
-    public void setGameOutcome(Boolean outcome) { //true in case of win, false otherwise
+    public void setGameOutcome(Integer matchCode, Boolean outcome) { //true in case of win, false otherwise
         if (outcome) {
             this.wins++;
 
@@ -53,9 +56,10 @@ public class Player implements Serializable{
             this.losses++;
         }
         Double totalGames = this.wins + this.losses;
-        Double ratio = this.wins / this.losses;
+        Double ratio = this.wins / totalGames;
         ratio*=10;
         this.rank = ratio.intValue();
+        this.addGame(matchCode);
     }
 
     public Double getLosses() {
@@ -72,5 +76,13 @@ public class Player implements Serializable{
 
     public String readMessage() throws InterruptedException {
         return this.hub.read();
+    }
+
+    public TreeSet<Integer> getMatchLog() {
+        return this.matchLog;
+    }
+
+    private void addGame(Integer matchCode) {
+        this.matchLog.add(matchCode);
     }
 }

@@ -4,11 +4,11 @@ import java.util.Set;
 
 public class Match {
     private  Integer id;
-    private Set<Player> blue;
-    private Set<Player> red;
-    private Integer winner;
+    private Set<String> blue;
+    private Set<String> red;
+    private Boolean winner; //false for blue, true for red
 
-    public Match(Integer id, Set<Player> blue, Set<Player> red, Integer winner) {
+    public Match(Integer id, Set<String> blue, Set<String> red, Boolean winner) {
         this.id = id;
         this.blue = blue;
         this.red = red;
@@ -19,15 +19,15 @@ public class Match {
         return id;
     }
 
-    public Set<Player> getBlue() {
+    public Set<String> getBlue() {
         return blue;
     }
 
-    public Set<Player> getRed() {
+    public Set<String> getRed() {
         return red;
     }
 
-    public Integer getWinner() {
+    public Boolean getWinner() {
         return winner;
     }
 }
