@@ -1,7 +1,9 @@
 package Game;
 
+import Exceptions.ChampionAlreadyPickedException;
 import Exceptions.InvalidAuthenticationException;
 import Exceptions.PlayerAlredyExistsException;
+import Server.ChampSelect;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +16,7 @@ public class Engine {
     private TreeMap<Integer,Set<String>> queue;
     private HashMap<Integer,Match> matchLog;
     private HashMap<String,Player> players;
+    private HashMap<String, ChampSelect> champsSelects;
     private Lock playerLock;
     private Lock gameLock;
 
@@ -26,6 +29,7 @@ public class Engine {
         }
         this.matchLog = new HashMap<>();
         this.players = new HashMap<>();
+        this.champsSelects = new HashMap<>();
    }
 
     public void signUp(String username, String password) throws PlayerAlredyExistsException {
@@ -57,7 +61,7 @@ public class Engine {
         return player;
     }
 
-    public Integer intoQueue(Player player) {
+    public String intoQueue(Player player) {
         gameLock.lock();
         try {
             Set<String> rank = this.queue.get(player.getRank());
@@ -65,7 +69,12 @@ public class Engine {
         } finally {
             gameLock.unlock();
         }
-        return player.getRank();
+        return "INQUEUE";
+    }
+
+    public String pick(ChampSelect queue, String nick, String champion) throws ChampionAlreadyPickedException{
+        // TODO
+        throw new ChampionAlreadyPickedException("NO");
     }
 
 }

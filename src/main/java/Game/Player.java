@@ -1,8 +1,12 @@
 package Game;
 
+import Exceptions.ChampionAlreadyPickedException;
+import Server.ChampSelect;
 import Server.Hub;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.Socket;
 
 public class Player implements Serializable{
     private String username;
@@ -10,7 +14,9 @@ public class Player implements Serializable{
     private Integer rank;
     private Double wins;
     private Double losses;
+    private ChampSelect currentQueue;
     private Hub hub;
+    private Socket session;
 
     public Player(String username, String password) {
         this.username = username;
@@ -19,6 +25,7 @@ public class Player implements Serializable{
         this.wins = 0.0;
         this.losses = 0.0;
         this.hub = new Hub();
+        this.currentQueue = null;
     }
 
     public String getUsername() {
@@ -72,5 +79,20 @@ public class Player implements Serializable{
 
     public String readMessage() throws InterruptedException {
         return this.hub.read();
+    }
+
+    public void setSession(Socket client) throws IOException {
+        if (this.session != null && !(this.session.isClosed()))
+            this.session.close();
+
+        this.session = client;
+    }
+
+    public void setCurrentQueue(ChampSelect currentQueue) {
+        this.currentQueue = currentQueue;
+    }
+
+    public ChampSelect getCurrentQueue() {
+        return currentQueue;
     }
 }

@@ -18,7 +18,8 @@ public class Server {
         while(true) {
             Socket client = server.accept();
             Barman cli = new Barman(engine, client);
-            cli.start();
+            Thread barman = new Thread(cli);
+            barman.start();
         }
     }
 }
