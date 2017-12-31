@@ -45,6 +45,21 @@ public class Barman implements Runnable {
         return "";
     }
 
+    private String translateRequest(String input) {
+        String[] info = input.split(" ", 2);
+        switch (info[0].toUpperCase()) {
+            case "LOGIN":
+                return this.login(info[1]);
+                default: return "OOPS";
+        }
+    }
+
+
+    private String login(String input) {
+        //TODO
+        return "";
+    }
+
     private void end() {
         if (this.notifier != null)
             this.notifier.terminate();
