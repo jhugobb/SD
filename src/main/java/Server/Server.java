@@ -5,8 +5,6 @@ import Game.Engine;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
-import java.util.concurrent.locks.Condition;
 
 public class Server {
     private static final int port = 1337;
@@ -16,9 +14,14 @@ public class Server {
         Engine engine = new Engine();
 
         while(true) {
+            Hub hub = new Hub();
             Socket client = server.accept();
-            Barman cli = new Barman(engine, client);
-            cli.start();
+            ServerWriter writer = new ServerWriter(hub, client);
+            ServerReader reader = new ServerReader(hub, client);
+            Thread twrite = new Thread(writer);
+            Thread tread = new Thread(reader);
+            twrite.start();
+            tread.start();
         }
     }
 }

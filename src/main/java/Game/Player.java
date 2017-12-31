@@ -10,6 +10,8 @@ public class Player implements Serializable{
     private Integer rank;
     private Double wins;
     private Double losses;
+    private Boolean isInQueue;
+    private Boolean isAuthenticated;
     private Hub hub;
 
     public Player(String username, String password) {
@@ -18,6 +20,8 @@ public class Player implements Serializable{
         this.rank = 5;
         this.wins = 0.0;
         this.losses = 0.0;
+        this.isInQueue = false;
+        this.isAuthenticated = false;
         this.hub = new Hub();
     }
 
@@ -72,5 +76,29 @@ public class Player implements Serializable{
 
     public String readMessage() throws InterruptedException {
         return this.hub.read();
+    }
+
+    public void queueUp() {
+        this.isInQueue = true;
+    }
+
+    public void dequeue() {
+        this.isInQueue = false;
+    }
+
+    public Boolean isInQueue() {
+        return isInQueue;
+    }
+
+    public void login() {
+        isAuthenticated = true;
+    }
+
+    public void logout() {
+        isAuthenticated = false;
+    }
+
+    public Boolean getAuthenticated() {
+        return isAuthenticated;
     }
 }
