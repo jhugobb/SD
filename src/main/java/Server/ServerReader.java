@@ -99,7 +99,7 @@ public class ServerReader implements Runnable{
 
     private String logout() {
         player.logout();
-        this.terminate();
+        player = null;
         return "SEEYA";
     }
 }
