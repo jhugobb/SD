@@ -37,10 +37,8 @@ public class Hub {
         return message;
     }
 
-    synchronized public void reset(int amount) {
-        for (int i = 0; i < amount; i++){
-            this.queue.remove(0);
-        }
+    synchronized public void reset() {
+        queue.clear();
         this.index = 0;
     }
 
