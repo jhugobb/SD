@@ -9,42 +9,42 @@ import java.util.ArrayList;
  */
 public class Hub {
 
-    private ArrayList<String> notifications;
+    private ArrayList<String> queue;
     private int index;
+    private boolean timeOut;
 
     public Hub() {
-        this.notifications = new ArrayList<>();
+        this.queue = new ArrayList<>();
         this.index = 0;
+        this.timeOut = false;
     }
 
     synchronized public void write(String message) {
-        this.notifications.add(message);
-        notifyAll();
+        if(!timeOut){
+            this.queue.add(message);
+            notifyAll();
+        }
     }
 
     synchronized public String read() throws InterruptedException {
-        while(isEmpty()) {
-            wait();
-        }
+            while(isEmpty()) {
+                wait();
+            }
 
-        String message = this.notifications.get(index);
-        this.index++;
+            String message = this.queue.get(index);
+            this.index++;
 
-        return message;
+            return message;
     }
 
-    synchronized public void reset() {
-        this.index = 0;
-    }
-
-    synchronized public void acknowledge(int amount) {
+    synchronized public void reset(int amount) {
         for (int i = 0; i < amount; i++){
-            this.notifications.remove(0);
+            this.queue.remove(0);
         }
         this.index = 0;
     }
 
-    synchronized public boolean isEmpty() {
-        return notifications.size() == index;
+    private synchronized boolean isEmpty() {
+        return queue.size() == index;
     }
 }
