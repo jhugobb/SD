@@ -23,6 +23,8 @@ public class ServerWriter implements Runnable{
             try {
                 String request = hub.read();
                 out.write(request);
+                out.newLine();
+                out.flush();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }

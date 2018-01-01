@@ -35,9 +35,11 @@ public class ServerReader implements Runnable{
                 response = in.readLine();
                 if ((player != null && !player.isInQueue()) || player == null){
                     hub.write(parseResponse(response));
-                }
+                } else hub.write("Está em queue, agora tem de esperar!");
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (IndexOutOfBoundsException e) {
+                hub.write("O input recebido não é válido!");
             } catch (InvalidRequestException | InvalidAuthenticationException | PlayerAlredyExistsException e) {
                 hub.write(e.getMessage());
             }
@@ -76,20 +78,20 @@ public class ServerReader implements Runnable{
 
     private String login(String input) throws InvalidRequestException, InvalidAuthenticationException {
         String[] info = input.split(" ");
-        if (info.length > 2) {
+        if (info.length != 2) {
             throw new InvalidRequestException("Os dados inseridos não são válidos");
         }
         player = engine.login(info[0], info[1]);
-        return "OK";
+        return "LOGGEDIN";
     }
 
     private String signUp(String input) throws InvalidRequestException, PlayerAlredyExistsException {
         String[] info = input.split(" ");
-        if (info.length > 2) {
+        if (info.length != 2) {
             throw new InvalidRequestException("Os dados inseridos não são válidos");
         }
         engine.signUp(info[0], info[1]);
-        return "OK";
+        return "SIGNEDUP";
     }
 
     private String queueUp() {
