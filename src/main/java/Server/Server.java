@@ -17,7 +17,7 @@ public class Server {
             Hub hub = new Hub();
             Socket client = server.accept();
             ServerWriter writer = new ServerWriter(hub, client);
-            ServerReader reader = new ServerReader(hub, client);
+            ServerReader reader = new ServerReader(hub, client, engine);
             Thread twrite = new Thread(writer);
             Thread tread = new Thread(reader);
             twrite.start();
