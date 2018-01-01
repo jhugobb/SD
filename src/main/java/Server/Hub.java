@@ -27,14 +27,14 @@ public class Hub {
     }
 
     synchronized public String read() throws InterruptedException {
-            while(isEmpty()) {
-                wait();
-            }
+        while(isEmpty()) {
+            wait();
+        }
 
-            String message = this.queue.get(index);
-            this.index++;
+        String message = this.queue.get(index);
+        this.index++;
 
-            return message;
+        return message;
     }
 
     synchronized public void reset(int amount) {
@@ -46,5 +46,9 @@ public class Hub {
 
     private synchronized boolean isEmpty() {
         return queue.size() == index;
+    }
+
+    public synchronized void timeOut(){
+        this.timeOut = true;
     }
 }
