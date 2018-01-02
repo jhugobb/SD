@@ -25,22 +25,30 @@ public class queueUp implements Runnable{
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
+            String str=null;
             send("SIGNUP "+username+" "+password);
-            while(!in.readLine().equals("SIGNEDUP")) {
+            while((str = in.readLine()) != null && !str.equals("SIGNEDUP") && !str.equals("O nome de utilizador não está disponível")) {
+                System.out.println(str);
             }
 
             send("LOGIN "+username+" "+password);
-            while(!in.readLine().equals("LOGGEDIN")){
+            while((str = in.readLine()) != null && !str.equals("LOGGEDIN")){
+                System.out.println(str);
             }
-
+            System.out.println(str);
 
             send("QUEUE");
-            while(!in.readLine().equals("QUEUED-UP")){
+            while((str = in.readLine())!= null && !str.equals("QUEUED-UP")){
+                System.out.println(str);
             }
-            while(!in.readLine().equals("START")){
+            System.out.println(str + username);
+
+            while((str = in.readLine())!= null && !str.equals("START")){
+                System.out.println(str);
             }
+            System.out.println(str);
+
             send("CHOOSE "+ champ);
-            String str;
             while((str = in.readLine())!= null && (!str.equals("FINISH") && !str.equals("DODGE"))){
                 System.out.println(str);
             }
@@ -48,6 +56,7 @@ public class queueUp implements Runnable{
             send("INFO");
             System.out.println(in.readLine());
             send("LOGOUT");
+            System.out.println("BYE");
             while(!in.readLine().equals("SEEYA")){
             }
 

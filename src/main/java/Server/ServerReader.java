@@ -43,6 +43,7 @@ public class ServerReader implements Runnable{
                 hub.write(e.getMessage());
             }
         }
+        if(player!= null) logout();
         hub.write("LEAVING");
         try {
             client.shutdownInput();
