@@ -18,6 +18,7 @@ public class ServerReader implements Runnable{
     private Boolean running;
     private Player player;
     private Engine engine;
+    private Socket client;
 
     ServerReader(Hub hub, Socket client, Engine engine) throws IOException {
         this.hub = hub;
@@ -25,30 +26,31 @@ public class ServerReader implements Runnable{
         this.engine = engine;
         this.running = true;
         this.player = null;
+        this.client = client;
     }
 
     @Override
     public void run() {
-        while (running) {
-            String response, command;
+        String response=null;
+        while ( (response = readLine()) !=null ) {
             try {
-                response = in.readLine();
-                if (response == null) hub.write("INVALID");
-                else if (player == null || (player != null && !player.getIsPlaying()))
+                if (player == null || (player != null && !player.getIsPlaying()))
                     hub.write(parseResponse(response));
                     else player.getGameHub().write(parseResponse(response));
-            } catch (IOException e) {
-                e.printStackTrace();
             } catch (IndexOutOfBoundsException e) {
                 hub.write("INVALID");
             } catch (InvalidRequestException | InvalidAuthenticationException | PlayerAlredyExistsException e) {
                 hub.write(e.getMessage());
             }
         }
-    }
-
-    public void terminate() {
-        this.running = false;
+        hub.write("LEAVING");
+        try {
+            client.shutdownInput();
+            client.shutdownOutput();
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String parseResponse(String response) throws InvalidRequestException, InvalidAuthenticationException, PlayerAlredyExistsException {
@@ -153,5 +155,17 @@ public class ServerReader implements Runnable{
         if (player.isInQueue()) engine.removeFromQueue(player);
         player = null;
         return "SEEYA";
+    }
+
+    private String readLine() {
+        String line = null;
+
+        try {
+            line = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return line;
     }
 }
