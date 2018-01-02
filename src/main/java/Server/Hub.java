@@ -49,4 +49,8 @@ public class Hub {
     public synchronized void timeOut(){
         this.timeOut = true;
     }
+
+    public synchronized boolean isValid(){
+        return !(this.isEmpty() && this.timeOut);
+    }
 }

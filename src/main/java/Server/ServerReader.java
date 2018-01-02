@@ -81,7 +81,7 @@ public class ServerReader implements Runnable{
         if (info.length != 2) {
             throw new InvalidRequestException("Os dados inseridos não são válidos");
         }
-        player = engine.login(info[0], info[1]);
+        player = engine.login(info[0], info[1],hub);
         return "LOGGEDIN";
     }
 

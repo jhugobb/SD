@@ -12,7 +12,8 @@ public class Player implements Serializable{
     private Double losses;
     private Boolean isInQueue;
     private Boolean isAuthenticated;
-    private Hub hub;
+    private Hub playerHub;
+    private Hub gameHub;
 
     public Player(String username, String password) {
         this.username = username;
@@ -22,7 +23,8 @@ public class Player implements Serializable{
         this.losses = 0.0;
         this.isInQueue = false;
         this.isAuthenticated = false;
-        this.hub = new Hub();
+        this.playerHub = new Hub();
+        this.gameHub = null;
     }
 
     public String getUsername() {
@@ -70,12 +72,35 @@ public class Player implements Serializable{
         return this.password.equals(password);
     }
 
-    public void resetHub() {
-        this.hub.reset();
+    public Hub getPlayerHub() {
+        return playerHub;
+    }
+
+    public void setPlayerHub(Hub playerHub) {
+        this.playerHub = playerHub;
+    }
+
+    public void resetPlayerHub() {
+        this.playerHub.reset();
+    }
+
+    public Hub getGameHub() {
+        return gameHub;
+    }
+
+    public void setGameHub(Hub gameHub) {
+        this.gameHub = gameHub;
+    }
+    public void resetGameHub() {
+        this.gameHub = null;
     }
 
     public String readMessage() throws InterruptedException {
-        return this.hub.read();
+        return this.playerHub.read();
+    }
+
+    public void writeMessage(String message){
+        this.gameHub.write(message);
     }
 
     public void queueUp() {
