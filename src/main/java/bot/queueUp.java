@@ -4,15 +4,15 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class queueUp {
+public class queueUp implements Runnable{
     private Integer champ;
     private String username;
     private String password;
     private BufferedWriter out;
 
-    public queueUp(Integer champ) {
+    public queueUp(Integer username, Integer champ) {
         this.champ = champ;
-        this.username = username + champ;
+        this.username = username.toString();
         this.password = champ.toString();
     }
 
@@ -25,31 +25,35 @@ public class queueUp {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            send("SINGUP "+username+" "+password);
-            while(!in.readLine().equals("SEEYA")) {
+            send("SIGNUP "+username+" "+password);
+            while(!in.readLine().equals("SIGNEDUP")) {
             }
 
-            send("LOGIN"+username+" "+password);
+            send("LOGIN "+username+" "+password);
             while(!in.readLine().equals("LOGGEDIN")){
             }
+
 
             send("QUEUE");
             while(!in.readLine().equals("QUEUED-UP")){
             }
             while(!in.readLine().equals("START")){
             }
-            send("CHOOSE "+username+" "+champ);
+            send("CHOOSE "+ champ);
             String str;
-            while(!(str =in.readLine()).equals("FINISH")){
+            while((str = in.readLine())!= null && (!str.equals("FINISH") && !str.equals("DODGE"))){
                 System.out.println(str);
             }
-            send("LOGOUT"+username+" "+password);
+            System.out.println(str +" "+ username);
+            send("INFO");
+            System.out.println(in.readLine());
+            send("LOGOUT");
             while(!in.readLine().equals("SEEYA")){
             }
 
-            socket.shutdownOutput();
-            socket.shutdownInput();
-            socket.close();
+            //socket.shutdownOutput();
+            //socket.shutdownInput();
+            //socket.close();
 
         } catch (UnknownHostException e) {
             System.out.println("ERRO: Server doesn't exist!");
@@ -65,9 +69,9 @@ public class queueUp {
         out.flush();
     }
 
-    public static void main(String[] args) {
-        queueUp c = new queueUp(Integer.parseInt(args[0]));
-        c.start("127.0.0.1",1337);
+    @Override
+    public void run() {
+        this.start("127.0.0.1",1337);
     }
-
 }
+
