@@ -86,7 +86,6 @@ public class Match implements Runnable{
                 e.printStackTrace();
             }
         }
-        String test;
     }
 
 
@@ -97,21 +96,6 @@ public class Match implements Runnable{
         if (status) message = "START";
         else message = "FINISH";
         playersHub.values().forEach(hub -> hub.write(message));
-    }
-
-    @Override
-    public void run() {
-        notifyClients(true);
-        champSelect();
-        if (isChosen(-1)){
-            playersHub.values().forEach(hub -> hub.write("DODGE"));
-            handleDodge(blue);
-            handleDodge(red);
-        } else {
-            getWinner();
-            notifyClients(false);
-        }
-        terminate();
     }
 
     private void handleDodge(Set<Player> team) {
@@ -125,4 +109,18 @@ public class Match implements Runnable{
         });
     }
 
+    @Override
+    public void run() {
+        notifyClients(true);
+        champSelect();
+        if (isChosen(-1)){
+            handleDodge(blue);
+            handleDodge(red);
+            playersHub.values().forEach(hub -> hub.write("DODGE"));
+        } else {
+            getWinner();
+            notifyClients(false);
+        }
+        terminate();
+    }
 }
