@@ -2,6 +2,7 @@ package Game;
 
 import Exceptions.InvalidAuthenticationException;
 import Exceptions.PlayerAlredyExistsException;
+import Server.Hub;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +10,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Engine {
     private HashMap<Integer, Set<String>> queue;
@@ -43,7 +46,7 @@ public class Engine {
         }
     }
 
-    public Player login(String username, String password) throws InvalidAuthenticationException {
+    public Player login(String username, String password, Hub playerHub) throws InvalidAuthenticationException {
         Player player;
         playerLock.lock();
         try {
@@ -53,7 +56,7 @@ public class Engine {
             if (player.getAuthenticated())
                 throw new InvalidAuthenticationException("Já existe outro utilizador autenticado");
             player.login();
-            player.resetHub();
+            player.setPlayerHub(playerHub);
         } finally {
             playerLock.unlock();
         }
@@ -62,20 +65,21 @@ public class Engine {
 
     public String intoQueue(Player player) {
         Integer rank = player.getRank();
-        Set<String> players = null;
+        Set<String> playersID = null;
         queueLock.lock();
         try {
             Set<String> rankQueue = this.queue.get(rank);
             rankQueue.add(player.getUsername());
             if (weHaveAParty(rank)) {
-                players = this.getAParty(rank);
+                playersID = this.getAParty(rank);
             }
         } finally {
             queueLock.unlock();
         }
-        if (players != null) {
+        if (playersID != null) {
             gameLock.lock();
             try {
+                Set<Player> players = playersID.stream().map(p -> this.players.get(p)).collect(Collectors.toSet());
                 Match m = new Match(matches.size()+1, players);
                 this.matches.put(matches.size(), m);
                 Thread t = new Thread(m);
@@ -85,7 +89,7 @@ public class Engine {
             }
             playerLock.lock();
             try {
-                this.deQueuePlayers(players);
+                this.deQueuePlayers(playersID);
             } finally {
                 playerLock.unlock();
             }
