@@ -57,7 +57,8 @@ public class Match implements Runnable{
        return champs.values().stream().anyMatch(c -> c.equals(champ));
     }
 
-    public String answer(){
+    public String answer(String user, Integer champ){
+        champs.put(user,champ);
         StringBuilder ans = new StringBuilder();
         ans.append("CHAMPS ");
         champs.forEach((k,v) -> ans.append(","+k+" "+ v+" "));
@@ -72,7 +73,7 @@ public class Match implements Runnable{
                 String[] info = msg.split(" ", 3);
                 if(info[0].equals("CHOOSE")){
                     if(!isChoose(info[1],Integer.parseInt(info[2])))
-                        playersHub.forEach(p -> p.write(answer()));
+                        playersHub.forEach(p -> p.write(answer(info[1], Integer.parseInt(info[2]))));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
