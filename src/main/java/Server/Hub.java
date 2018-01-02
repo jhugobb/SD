@@ -20,10 +20,8 @@ public class Hub {
     }
 
     synchronized public void write(String message) {
-        if(!timeOut){
-            this.queue.add(message);
-            notifyAll();
-        }
+        this.queue.add(message);
+        notifyAll();
     }
 
     synchronized public String read() throws InterruptedException {
@@ -42,15 +40,16 @@ public class Hub {
         this.index = 0;
     }
 
-    private synchronized boolean isEmpty() {
+    synchronized private boolean isEmpty() {
         return queue.size() == index;
     }
 
-    public synchronized void timeOut(){
+    synchronized public void timeOut(){
         this.timeOut = true;
+        this.write("DONE");
     }
 
-    public synchronized boolean isValid(){
+    synchronized public boolean isValid(){
         return !(this.isEmpty() && this.timeOut);
     }
 }

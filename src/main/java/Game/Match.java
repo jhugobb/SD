@@ -1,40 +1,38 @@
 package Game;
 
 import Server.Hub;
-import javafx.util.Pair;
 
 import java.util.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Match implements Runnable{
     private Integer id;
+    private Engine engine;
     private Set<Player> blue;
     private Set<Player> red;
-    private Set<Hub> playersHub;
+    private HashMap<String, Hub> playersHub;
     private Hub gameHub;
     private Boolean winner;
     private Boolean running;
     private Map<String,Integer> champs;
     private Thread timer;
 
-    public Match(Integer id, Set<Player> players) {
+    Match(Integer id, Set<Player> players, Engine engine) {
         this.id = id;
+        this.engine = engine;
         this.blue = new HashSet<>();
         this.red = new HashSet<>();
         this.gameHub = new Hub();
-        this.playersHub = new HashSet<>();
+        this.playersHub = new HashMap<>();
         this.champs = new TreeMap<>();
         int i = 0;
         for(Player player : players){
-            if (i<5){
+            if (i<1){
                 blue.add(player);
 
             }else red.add(player);
-            playersHub.add(player.getPlayerHub());
+            playersHub.put(player.getUsername(), player.getPlayerHub());
             player.setGameHub(gameHub);
-            champs.put(player.getUsername(),0);
+            champs.put(player.getUsername(),-1);
             i++;
         }
         this.winner = null;
@@ -42,52 +40,88 @@ public class Match implements Runnable{
         timer = new Thread(new Timer(gameHub));
     }
 
-    public void terminate() {
+    private void terminate() {
         running = false;
     }
 
-    public void getWinner(){
+    private void getWinner(){
         Random rand = new Random();
         winner = rand.nextBoolean();
+        String winningTeam = winner ? "BLUE" : "RED";
+        playersHub.values().forEach(hub -> hub.write(winningTeam));
         blue.forEach(p -> p.setGameOutcome(winner));
         red.forEach(p -> p.setGameOutcome(!winner));
     }
 
-    public boolean isChoose(String user, Integer champ){
+    private boolean isChosen(Integer champ){
        return champs.values().stream().anyMatch(c -> c.equals(champ));
     }
 
-    public String answer(String user, Integer champ){
+    private String answer(String user, Integer champ){
         champs.put(user,champ);
         StringBuilder ans = new StringBuilder();
         ans.append("CHAMPS ");
-        champs.forEach((k,v) -> ans.append(","+k+" "+ v+" "));
+        champs.forEach((k,v) -> ans.append(k+" HAS "+v+";"));
         return  ans.toString();
     }
 
-    public void champSelect(){
+    private void champSelect() {
         timer.start();
         while(gameHub.isValid()){
             try {
                 String msg = gameHub.read();
-                String[] info = msg.split(" ", 3);
-                if(info[0].equals("CHOOSE")){
-                    if(!isChoose(info[1],Integer.parseInt(info[2]))) {
-                        String answer = this.answer(info[1], Integer.parseInt(info[2]));
-                        playersHub.forEach(p -> p.write(answer));
+                String[] info = msg.split(" ");
+                if (info[0].equals("CHOOSE")) {
+                    Integer hero = Integer.parseInt(info[1]);
+                    if (hero < 1 || hero > 30) playersHub.get(info[2]).write("INVALID");
+                    else if (!isChosen(hero)) {
+                        String answer = this.answer(info[2], hero);
+                        playersHub.values().forEach(p -> p.write(answer));
+                    } else {
+                        playersHub.get(info[2]).write("TAKEN");
                     }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        String test;
+    }
+
+
+    private void notifyClients(Boolean status) {
+        blue.forEach(p -> p.setPlaying(status));
+        red.forEach(p -> p.setPlaying(status));
+        String message;
+        if (status) message = "START";
+        else message = "FINISH";
+        playersHub.values().forEach(hub -> hub.write(message));
     }
 
     @Override
     public void run() {
+        notifyClients(true);
         champSelect();
-        getWinner();
+        if (isChosen(-1)){
+            playersHub.values().forEach(hub -> hub.write("DODGE"));
+            handleDodge(blue);
+            handleDodge(red);
+        } else {
+            getWinner();
+            notifyClients(false);
+        }
         terminate();
+    }
+
+    private void handleDodge(Set<Player> team) {
+        team.forEach(p -> {
+            p.setPlaying(false);
+            if (champs.get(p.getUsername()) != -1) {
+                p.getPlayerHub().write(engine.intoQueue(p));
+            } else {
+                p.setGameOutcome(false);
+            }
+        });
     }
 
 }
