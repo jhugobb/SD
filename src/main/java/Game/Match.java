@@ -61,7 +61,8 @@ public class Match implements Runnable{
         champs.put(user,champ);
         StringBuilder ans = new StringBuilder();
         ans.append("CHAMPS ");
-        champs.forEach((k,v) -> ans.append(k+" HAS "+v+";"));
+        blue.forEach(p -> ans.append(p.getUsername()+" "+champs.get(p.getUsername())+";"));
+        red.forEach(p -> ans.append(p.getUsername()+" "+champs.get(p.getUsername())+";"));
         return  ans.toString();
     }
 
