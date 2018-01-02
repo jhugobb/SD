@@ -65,6 +65,7 @@ public class Engine {
 
     public String intoQueue(Player player) {
         Integer rank = player.getRank();
+        if (rank == 10) rank--;
         Set<String> playersID = null;
         queueLock.lock();
         try {
@@ -77,22 +78,24 @@ public class Engine {
             queueLock.unlock();
         }
         if (playersID != null) {
+            playerLock.lock();
+            Set<Player> players;
+            try {
+                players = playersID.stream().map(p -> this.players.get(p)).collect(Collectors.toSet());
+                this.deQueuePlayers(playersID);
+            } finally {
+                playerLock.unlock();
+            }
             gameLock.lock();
             try {
-                Set<Player> players = playersID.stream().map(p -> this.players.get(p)).collect(Collectors.toSet());
-                Match m = new Match(matches.size()+1, players);
+                Match m = new Match(matches.size()+1, players, this);
                 this.matches.put(matches.size(), m);
                 Thread t = new Thread(m);
                 t.start();
             } finally {
                 gameLock.unlock();
             }
-            playerLock.lock();
-            try {
-                this.deQueuePlayers(playersID);
-            } finally {
-                playerLock.unlock();
-            }
+
         } else {
             playerLock.lock();
             try {
@@ -101,7 +104,7 @@ public class Engine {
                 playerLock.unlock();
             }
         }
-        return "OK";
+        return "QUEUED-UP";
     }
 
     private void deQueuePlayers(Set<String> players) {
@@ -109,17 +112,12 @@ public class Engine {
     }
 
     private Boolean weHaveAParty(Integer rank) {
-        queueLock.lock();
-        try {
-            Integer size = queue.get(rank).size();
-            Set<String> above = queue.get(rank+1);
-            Set<String> below = queue.get(rank-1);
-            if (above != null) size+= above.size();
-            if (below != null) size+=below.size();
-            return size >= 10;
-        } finally {
-            queueLock.unlock();
-        }
+        Integer size = queue.get(rank).size();
+        Set<String> above = queue.get(rank+1);
+        Set<String> below = queue.get(rank-1);
+        if (above != null) size+= above.size();
+        if (below != null) size+=below.size();
+        return size >= 10;
     }
 
     private Set<String> getAParty(Integer rank) {
@@ -140,6 +138,23 @@ public class Engine {
                 res.add(it.next());
             }
             rank.removeAll(res);
+        }
+    }
+
+    public void removeFromQueue(Player player) {
+        queueLock.lock();
+        try {
+            Integer rank = player.getRank();
+            if (rank == 10) rank--;
+            queue.get(rank).remove(player.getUsername());
+        } finally {
+            queueLock.unlock();
+        }
+        playerLock.lock();
+        try {
+            player.dequeue();
+        } finally {
+            playerLock.unlock();
         }
     }
 

@@ -30,16 +30,17 @@ public class ServerReader implements Runnable{
     @Override
     public void run() {
         while (running) {
-            String response = null;
+            String response, command;
             try {
                 response = in.readLine();
-                if ((player != null && !player.isInQueue()) || player == null){
+                if (response == null) hub.write("INVALID");
+                else if (player == null || (player != null && !player.getIsPlaying()))
                     hub.write(parseResponse(response));
-                } else hub.write("Está em queue, agora tem de esperar!");
+                    else player.getGameHub().write(parseResponse(response));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (IndexOutOfBoundsException e) {
-                hub.write("O input recebido não é válido!");
+                hub.write("INVALID");
             } catch (InvalidRequestException | InvalidAuthenticationException | PlayerAlredyExistsException e) {
                 hub.write(e.getMessage());
             }
@@ -55,25 +56,68 @@ public class ServerReader implements Runnable{
         switch (info[0].toUpperCase()) {
             case "LOGIN":
                 requiresAuthentication(false);
+                requiresInQueue(false);
+                requiresInGame(false);
                 return this.login(info[1]);
             case "SIGNUP":
                 requiresAuthentication(false);
+                requiresInQueue(false);
+                requiresInGame(false);
                 return this.signUp(info[1]);
             case "QUEUE":
                 requiresAuthentication(true);
+                requiresInQueue(false);
+                requiresInGame(false);
                 return this.queueUp();
+            case "CANCEL":
+                requiresAuthentication(true);
+                requiresInQueue(true);
+                requiresInGame(false);
+                return this.cancelQueue();
+            case "CHOOSE":
+                requiresAuthentication(true);
+                requiresInQueue(false);
+                requiresInGame(true);
+                return this.chooseHero(info[1]);
             case "LOGOUT":
                 requiresAuthentication(true);
+                requiresInQueue(false);
+                requiresInGame(false);
                 return this.logout();
             default: return "OOPS";
         }
     }
 
-    private void requiresAuthentication(boolean status) throws InvalidRequestException {
-        if (player == null && status)
-            throw new InvalidRequestException("É necessário estar autenticado para executar esse comando!");
-        if (player != null && !status)
-            throw new InvalidRequestException("Já existe uma sessão iniciada");
+    private String cancelQueue() {
+        engine.removeFromQueue(player);
+        return "BYEQUEUE";
+    }
+
+    private String chooseHero(String input) throws InvalidRequestException {
+        String[] info = input.split(" ");
+        if (info.length != 1) throw new InvalidRequestException("INVALID");
+        return "CHOOSE " + info[0] + " " + player.getUsername();
+    }
+
+    private void requiresAuthentication(Boolean auth) throws InvalidRequestException {
+        if (player == null && auth)
+            throw new InvalidRequestException("DENIED");
+        if (player != null && !auth)
+            throw new InvalidRequestException("DOUBLE");
+    }
+
+    private void requiresInQueue(Boolean shouldBe) throws InvalidRequestException {
+        if (!shouldBe && player != null && player.isInQueue())
+            throw new InvalidRequestException("INQUEUE");
+        if (shouldBe && player != null && !player.isInQueue())
+            throw new InvalidRequestException("NOTINQUEUE");
+    }
+
+    private void requiresInGame(Boolean shouldBe) throws InvalidRequestException {
+        if (shouldBe && player != null && !player.getIsPlaying())
+            throw new InvalidRequestException("NOTINGAME");
+        if (!shouldBe && player != null && player.getIsPlaying())
+            throw new InvalidRequestException("INGAME");
     }
 
     private String login(String input) throws InvalidRequestException, InvalidAuthenticationException {
@@ -101,6 +145,7 @@ public class ServerReader implements Runnable{
 
     private String logout() {
         player.logout();
+        if (player.isInQueue()) engine.removeFromQueue(player);
         player = null;
         return "SEEYA";
     }

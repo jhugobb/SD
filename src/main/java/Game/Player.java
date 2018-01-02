@@ -3,6 +3,8 @@ package Game;
 import Server.Hub;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Player implements Serializable{
     private String username;
@@ -12,8 +14,10 @@ public class Player implements Serializable{
     private Double losses;
     private Boolean isInQueue;
     private Boolean isAuthenticated;
+    private Boolean isPlaying;
     private Hub playerHub;
     private Hub gameHub;
+    private Lock playingLock;
 
     public Player(String username, String password) {
         this.username = username;
@@ -23,8 +27,10 @@ public class Player implements Serializable{
         this.losses = 0.0;
         this.isInQueue = false;
         this.isAuthenticated = false;
+        this.isPlaying = false;
         this.playerHub = null;
         this.gameHub = null;
+        this.playingLock = new ReentrantLock();
     }
 
     public String getUsername() {
@@ -59,7 +65,7 @@ public class Player implements Serializable{
             this.losses++;
         }
         Double totalGames = this.wins + this.losses;
-        Double ratio = this.wins / this.losses;
+        Double ratio = this.wins / totalGames;
         ratio*=10;
         this.rank = ratio.intValue();
     }
@@ -84,23 +90,8 @@ public class Player implements Serializable{
         this.playerHub.reset();
     }
 
-    public Hub getGameHub() {
-        return gameHub;
-    }
-
     public void setGameHub(Hub gameHub) {
         this.gameHub = gameHub;
-    }
-    public void resetGameHub() {
-        this.gameHub = null;
-    }
-
-    public String readMessage() throws InterruptedException {
-        return this.playerHub.read();
-    }
-
-    public void writeMessage(String message){
-        this.gameHub.write(message);
     }
 
     public void queueUp() {
@@ -121,9 +112,32 @@ public class Player implements Serializable{
 
     public void logout() {
         isAuthenticated = false;
+        resetPlayerHub();
     }
 
     public Boolean getAuthenticated() {
         return isAuthenticated;
+    }
+
+    public void setPlaying(Boolean status) {
+        playingLock.lock();
+        try {
+            this.isPlaying = status;
+        } finally {
+            playingLock.unlock();
+        }
+    }
+
+    public Boolean getIsPlaying() {
+        playingLock.lock();
+        try {
+            return isPlaying;
+        } finally {
+            playingLock.unlock();
+        }
+    }
+
+    public Hub getGameHub() {
+        return gameHub;
     }
 }
