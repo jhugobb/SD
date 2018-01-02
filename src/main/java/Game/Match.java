@@ -39,7 +39,7 @@ public class Match implements Runnable{
         }
         this.winner = null;
         this.running = true;
-        timer = new Thread(new Timer);
+        timer = new Thread(new Timer(gameHub));
     }
 
     public void terminate() {
