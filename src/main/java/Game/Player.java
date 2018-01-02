@@ -140,4 +140,9 @@ public class Player implements Serializable{
     public Hub getGameHub() {
         return gameHub;
     }
+
+    @Override
+    public String toString() {
+        return username + "; wins: " + wins.toString() + " losses: " + losses.toString() + " rank: " + rank.toString();
+    }
 }

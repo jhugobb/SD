@@ -64,6 +64,11 @@ public class ServerReader implements Runnable{
                 requiresInQueue(false);
                 requiresInGame(false);
                 return this.signUp(info[1]);
+            case "INFO":
+                requiresAuthentication(true);
+                requiresInQueue(false);
+                requiresInGame(false);
+                return "INFO " + this.player.toString();
             case "QUEUE":
                 requiresAuthentication(true);
                 requiresInQueue(false);
@@ -99,10 +104,10 @@ public class ServerReader implements Runnable{
         return "CHOOSE " + info[0] + " " + player.getUsername();
     }
 
-    private void requiresAuthentication(Boolean auth) throws InvalidRequestException {
-        if (player == null && auth)
+    private void requiresAuthentication(Boolean shouldBe) throws InvalidRequestException {
+        if (player == null && shouldBe)
             throw new InvalidRequestException("DENIED");
-        if (player != null && !auth)
+        if (player != null && !shouldBe)
             throw new InvalidRequestException("DOUBLE");
     }
 
