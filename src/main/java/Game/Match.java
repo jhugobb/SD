@@ -72,8 +72,10 @@ public class Match implements Runnable{
                 String msg = gameHub.read();
                 String[] info = msg.split(" ", 3);
                 if(info[0].equals("CHOOSE")){
-                    if(!isChoose(info[1],Integer.parseInt(info[2])))
-                        playersHub.forEach(p -> p.write(answer(info[1], Integer.parseInt(info[2]))));
+                    if(!isChoose(info[1],Integer.parseInt(info[2]))) {
+                        String answer = this.answer(info[1], Integer.parseInt(info[2]));
+                        playersHub.forEach(p -> p.write(answer));
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
