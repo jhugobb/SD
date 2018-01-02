@@ -23,7 +23,7 @@ public class Player implements Serializable{
         this.losses = 0.0;
         this.isInQueue = false;
         this.isAuthenticated = false;
-        this.playerHub = new Hub();
+        this.playerHub = null;
         this.gameHub = null;
     }
 
