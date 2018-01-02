@@ -69,9 +69,9 @@ public class Match implements Runnable{
         while(gameHub.isValid()){
             try {
                 String msg = gameHub.read();
-                String[] info = msg.split(" ", 2);
+                String[] info = msg.split(" ", 3);
                 if(info[0].equals("CHOOSE")){
-                    if(isChoose(info[1],Integer.parseInt(info[2])))
+                    if(!isChoose(info[1],Integer.parseInt(info[2])))
                         playersHub.forEach(p -> p.write(answer()));
                 }
             } catch (InterruptedException e) {
@@ -83,6 +83,7 @@ public class Match implements Runnable{
     @Override
     public void run() {
         champSelect();
+        getWinner();
         terminate();
     }
 
