@@ -1,10 +1,10 @@
 package Server;
 
-import Exceptions.InvalidAuthenticationException;
-import Exceptions.InvalidRequestException;
-import Exceptions.PlayerAlredyExistsException;
-import Game.Engine;
-import Game.Player;
+import Server.Exceptions.InvalidAuthenticationException;
+import Server.Exceptions.InvalidRequestException;
+import Server.Exceptions.PlayerAlredyExistsException;
+import Server.Game.Engine;
+import Server.Game.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
