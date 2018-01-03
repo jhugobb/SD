@@ -25,11 +25,6 @@ public class Stub implements Runnable {
         }
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-
     private int getChoice() {
         int option;
         option = menu.choice();
