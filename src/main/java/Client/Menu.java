@@ -103,19 +103,19 @@ public class Menu {
     }
 
     private void showChamps() {
-        System.out.println("******************* CHOOSE A CHAMP *****************           PLAYERS\n"+
-                "* 01 - Luigi               11 - Lucifer       21 - *   [BLUE]  " + getChoice(1)+ "\n"+
-                "* 02 - Eevee               12 - IT            22 - *   [BLUE]  " + getChoice(2)+ "\n"+
-                "* 03 - Scott Pilgrim       13 - Hacker man    23 - *   [BLUE]  "+ getChoice(3)+"\n"+
-                "* 04 - Persephone          14 -               24 - *   [BLUE]  "+ getChoice(4)+"\n"+
-                "* 05 - Link                15 -               25 - *   [BLUE]  "+ getChoice(5)+"\n"+
-                "* 06 - Zelda               16 -               26 - *   [RED]   "+ getChoice(6)+"\n"+
-                "* 07 - Sonic               17 -               27 - *   [RED]   "+ getChoice(7)+"\n"+
-                "* 08 - Mr T                18 -               28 - *   [RED]   "+ getChoice(8)+"\n"+
-                "* 09 - MacGyver            19 -               29 - *   [RED]   "+ getChoice(9)+"\n"+
-                "* 10 - Mario               20 -               30 - *   [RED]   "+ getChoice(10)+"\n"+
-                "*                       00 - RANDOM                *\n" +
-                "****************************************************\n");
+        System.out.println("******************* CHOOSE A HERO *******************************    PLAYERS\n"+
+                "* 01 - Luigi               11 - Red           21 - Jack Sparrow *   [BLUE]  " + getChoice(1)+ "\n"+
+                "* 02 - Eevee               12 - Mathew Mercer 22 - Darth Vader  *   [BLUE]  " + getChoice(2)+ "\n"+
+                "* 03 - Scott Pilgrim       13 - Hacker man    23 - Yoda         *   [BLUE]  "+ getChoice(3)+"\n"+
+                "* 04 - Persephone          14 - Naruto        24 - Asmodeous    *   [BLUE]  "+ getChoice(4)+"\n"+
+                "* 05 - Link                15 - Pikachu       25 - Batman       *   [BLUE]  "+ getChoice(5)+"\n"+
+                "* 06 - Zelda               16 - Megaman       26 - Raven Queen  *   [RED]   "+ getChoice(6)+"\n"+
+                "* 07 - Sans                17 - Pacwoman      27 - IT           *   [RED]   "+ getChoice(7)+"\n"+
+                "* 08 - Mr T                18 - Gambit        28 - Joker        *   [RED]   "+ getChoice(8)+"\n"+
+                "* 09 - R35                 19 - Scanlan       29 - The Flash    *   [RED]   "+ getChoice(9)+"\n"+
+                "* 10 - Mario               20 - Papyrus       30 - Sonic        *   [RED]   "+ getChoice(10)+"\n"+
+                "*                       00 - RANDOM                             *\n" +
+                "*****************************************************************\n");
     }
 
     public Integer choice() {

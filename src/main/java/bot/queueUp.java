@@ -27,26 +27,23 @@ public class queueUp implements Runnable{
 
             String str=null;
             send("SIGNUP "+username+" "+password);
-            while((str = in.readLine()) != null && !str.equals("SIGNEDUP") && !str.equals("O nome de utilizador não está disponível")) {
+            while(!(str = in.readLine()).equals("SIGNEDUP")) {
                 System.out.println(str);
             }
 
             send("LOGIN "+username+" "+password);
-            while((str = in.readLine()) != null && !str.equals("LOGGEDIN")){
+            while(!(str = in.readLine()).equals("LOGGEDIN")){
                 System.out.println(str);
             }
 
             send("QUEUE");
-            while((str = in.readLine())!= null && !str.equals("QUEUED-UP")){
-                System.out.println(str);
-            }
 
-            while((str = in.readLine())!= null && !str.equals("START")){
+            while(!(str = in.readLine()).equals("START")){
                 System.out.println(str);
             }
 
             send("CHOOSE "+ champ);
-            while((str = in.readLine())!= null && (!str.equals("FINISH") && !str.equals("DODGE"))){
+            while(!(str = in.readLine()).equals("FINISH") && !str.equals("DODGE")){
                 System.out.println(str);
             }
             System.out.println(str +" "+ username);
