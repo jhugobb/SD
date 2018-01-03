@@ -35,18 +35,15 @@ public class queueUp implements Runnable{
             while((str = in.readLine()) != null && !str.equals("LOGGEDIN")){
                 System.out.println(str);
             }
-            System.out.println(str);
 
             send("QUEUE");
             while((str = in.readLine())!= null && !str.equals("QUEUED-UP")){
                 System.out.println(str);
             }
-            System.out.println(str + username);
 
             while((str = in.readLine())!= null && !str.equals("START")){
                 System.out.println(str);
             }
-            System.out.println(str);
 
             send("CHOOSE "+ champ);
             while((str = in.readLine())!= null && (!str.equals("FINISH") && !str.equals("DODGE"))){
@@ -56,13 +53,8 @@ public class queueUp implements Runnable{
             send("INFO");
             System.out.println(in.readLine());
             send("LOGOUT");
-            System.out.println("BYE");
             while(!in.readLine().equals("SEEYA")){
             }
-
-            //socket.shutdownOutput();
-            //socket.shutdownInput();
-            //socket.close();
 
         } catch (UnknownHostException e) {
             System.out.println("ERRO: Server doesn't exist!");
