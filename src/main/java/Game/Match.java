@@ -120,8 +120,9 @@ public class Match implements Runnable{
     private void handleDodge(Set<Player> team) {
         team.forEach(p -> {
             p.setPlaying(false);
-            if (champs.get(p.getUsername()) == -1)
+            if (champs.get(p.getUsername()) == -1){
                 p.setGameOutcome(false);
+            }
         });
     }
 

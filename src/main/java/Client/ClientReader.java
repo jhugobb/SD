@@ -58,6 +58,12 @@ public class ClientReader implements Runnable{
                     menu.show();
                 }
                 break;
+            case("KICKED"):
+                if (menu.getState()==3) {
+                    System.out.println("TIME OUT - You get a loss for not picking your Hero!");
+                    menu.setState(1);
+                    menu.show();
+                }
             case("DOUBLE"):
                 System.out.println("This user is already authenticated elsewhere");
                 menu.show();
