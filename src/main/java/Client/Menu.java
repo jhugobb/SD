@@ -3,6 +3,13 @@ import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 public class Menu {
+    private static final String RESET = "\u001B[0m";
+    private static final String CLEAR = "\u001b[2J\u001b[H";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String PURPLE = "\u001B[35m";
+    private static final String BLUE = "\u001B[34m";
+    private static final String CYAN = "\u001B[36m";
     private Scanner input;
     private Integer state; //0 --> not auth, 1--> auth, 2--> auth && in Queue, 3--> Champ choosing, 4--> Stats, 5-->EndScreen
     private String user;
@@ -58,34 +65,34 @@ public class Menu {
     public void show() {
         switch (state) {
             case 0:
-                System.out.println("**************** MENU ***************\n" +
+                System.out.println(CLEAR+"**************** MENU ***************\n" +
                         "* 1 - Login                         *\n" +
                         "* 2 - Sign up                       *\n" +
                         "* 0 - Exit                          *\n" +
-                        "*************************************\n");
+                        "*************************************\n"+RESET);
                 break;
             case 1:
-                System.out.println("************** WELCOME **************\n" +
+                System.out.println(CLEAR+"************** WELCOME **************\n" +
                         "* 1 - Play                          *\n" +
                         "* 2 - Stats                         *\n" +
                         "* 0 - Logout                        *\n" +
-                        "*************************************\n");
+                        "*************************************\n"+RESET);
                 break;
             case 2:
-                System.out.println("**************** IN Q ***************\n" +
+                System.out.println(CLEAR+"**************** IN Q ***************\n" +
                         "*                                   *\n" +
                         "*             PLEASE WAIT           *\n" +
                         "*              PATIENTLY            *\n" +
                         "*                                   *\n" +
                         "* 0 - Cancel game                   *\n" +
-                        "*************************************\n");
+                        "*************************************\n"+RESET);
                 this.choices.clear();
                 break;
             case 3:
                 showChamps();
                 break;
             case 4:
-                System.out.println("**************** STATS ***************\n" +
+                System.out.println(CLEAR+"**************** STATS ***************\n" +
                         "  USERNAME: " + user + "\n" +
                         "  RANK: " + rank + "\n" +
                         "  WINS: " + wins + "\n" +
@@ -94,28 +101,25 @@ public class Menu {
                         "**************************************\n");
                 break;
             case 5:
-                System.out.println("*************** GAME OVER *************\n" +
-                        "  WINNER - "+ team.toUpperCase() + " TEAM!\n\n" +
-                        "  0 - Exit\n" +
-                        "**************************************\n");
+                System.out.println(getWinner());
                 break;
         }
         System.out.println("Escolha uma opção: ");
     }
 
     private void showChamps() {
-        System.out.println("******************* CHOOSE A HERO *******************************    PLAYERS\n"+
-                "* 01 - Luigi               11 - Red           21 - Jack Sparrow *   [BLUE]  " + getChoice(1)+ "\n"+
-                "* 02 - Eevee               12 - Mathew Mercer 22 - Darth Vader  *   [BLUE]  " + getChoice(2)+ "\n"+
-                "* 03 - Scott Pilgrim       13 - Hacker man    23 - Yoda         *   [BLUE]  "+ getChoice(3)+"\n"+
-                "* 04 - Persephone          14 - Naruto        24 - Asmodeous    *   [BLUE]  "+ getChoice(4)+"\n"+
-                "* 05 - Link                15 - Pikachu       25 - Batman       *   [BLUE]  "+ getChoice(5)+"\n"+
-                "* 06 - Zelda               16 - Megaman       26 - Raven Queen  *   [RED]   "+ getChoice(6)+"\n"+
-                "* 07 - Sans                17 - Pacwoman      27 - IT           *   [RED]   "+ getChoice(7)+"\n"+
-                "* 08 - Mr T                18 - Gambit        28 - Joker        *   [RED]   "+ getChoice(8)+"\n"+
-                "* 09 - R35                 19 - Scanlan       29 - The Flash    *   [RED]   "+ getChoice(9)+"\n"+
-                "* 10 - Mario               20 - Papyrus       30 - Sonic        *   [RED]   "+ getChoice(10)+"\n"+
-                "*                       00 - RANDOM                             *\n" +
+        System.out.println(CLEAR+"************************ CHOOSE A HERO **************************    PLAYERS\n"+
+                "* 01 - Luigi               " + CYAN +"11 - Red"+ RESET +"           21 - Jack Sparrow *   "+BLUE+"[BLUE]  " + getChoice(1)+ RESET+"\n"+
+                "* 02 - Eevee               12 - Mathew Mercer 22 - Darth Vader  *   "+BLUE+"[BLUE]  " + getChoice(2)+ RESET+"\n"+
+                "* 03 - Scott Pilgrim       13 - Hacker man    23 - Yoda         *   "+BLUE+"[BLUE]  "+ getChoice(3)+RESET+"\n"+
+                "* "+PURPLE+"04 - Persephone"+RESET+"          14 - Naruto        24 - Asmodeous    *   "+BLUE+"[BLUE]  "+ getChoice(4)+RESET+"\n"+
+                "* 05 - Link                15 - Pikachu       25 - Batman       *   "+BLUE+"[BLUE]  "+ getChoice(5)+RESET+"\n"+
+                "* 06 - Zelda               16 - Megaman       26 - Raven Queen  *   "+RED+"[RED]   "+ getChoice(6)+RESET+"\n"+
+                "* 07 - Sans                17 - Pacwoman      27 - IT           *   "+RED+"[RED]   "+ getChoice(7)+RESET+"\n"+
+                "* 08 - Mr T                18 - Gambit        28 - Joker        *   "+RED+"[RED]   "+ getChoice(8)+RESET+"\n"+
+                "* "+RED+"09 - R35"+RESET+"                 19 - Scanlan       29 - The Flash    *   "+RED+"[RED]   "+ getChoice(9)+RESET+"\n"+
+                "* 10 - Mario               20 - Papyrus       30 - Sonic        *   "+RED+"[RED]   "+ getChoice(10)+RESET+"\n"+
+                "*                          "+GREEN+"00 - RANDOM"+RESET+"                           *\n" +
                 "*****************************************************************\n");
     }
 
@@ -163,6 +167,21 @@ public class Menu {
                 i++;
             }
         }
+        return ret;
+    }
+
+    private String getWinner() {
+        String ret;
+        if (team.toUpperCase().equals("RED")) {
+            ret = RED+"*************** GAME OVER *************\n" +
+                    "  WINNER - "+ team.toUpperCase() + " TEAM!\n\n" +
+                    "  0 - Exit\n" +
+                    "**************************************\n"+RESET;
+        }
+        else ret = BLUE+ "*************** GAME OVER *************\n" +
+                "  WINNER - "+ team.toUpperCase() + " TEAM!\n\n" +
+                "  0 - Exit\n" +
+                "**************************************\n" + RESET;
         return ret;
     }
 }
