@@ -1,6 +1,6 @@
 package Server;
 
-import Game.Engine;
+import Server.Game.Engine;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -1,7 +1,7 @@
-package Game;
+package Server.Game;
 
-import Exceptions.InvalidAuthenticationException;
-import Exceptions.PlayerAlredyExistsException;
+import Server.Exceptions.InvalidAuthenticationException;
+import Server.Exceptions.PlayerAlredyExistsException;
 import Server.Hub;
 
 import java.util.HashMap;
@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Engine {
     private HashMap<Integer, Set<String>> queue;
