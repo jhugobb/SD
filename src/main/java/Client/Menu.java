@@ -79,6 +79,7 @@ public class Menu {
                         "*                                   *\n" +
                         "* 0 - Cancel game                   *\n" +
                         "*************************************\n");
+                this.choices.clear();
                 break;
             case 3:
                 showChamps();
