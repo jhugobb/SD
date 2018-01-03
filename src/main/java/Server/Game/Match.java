@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Match implements Runnable{
-    private Integer id;
     private Engine engine;
     private Set<Player> blue;
     private Set<Player> red;

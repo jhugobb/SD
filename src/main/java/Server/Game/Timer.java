@@ -5,7 +5,7 @@ import Server.Hub;
 public class Timer implements Runnable{
     private Hub gameHub;
 
-    public Timer(Hub gameHub) {
+    Timer(Hub gameHub) {
         this.gameHub = gameHub;
     }
 
