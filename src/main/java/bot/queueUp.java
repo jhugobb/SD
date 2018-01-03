@@ -25,9 +25,10 @@ public class queueUp implements Runnable{
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            String str;
+            String str=null;
+
             send("SIGNUP "+username+" "+password);
-            while((str = in.readLine()) != null && !str.equals("SIGNEDUP") && !str.equals("O nome de utilizador não está disponível")) {
+            while((str = in.readLine()) != null && !str.equals("SIGNEDUP") && !str.contains("O nome de utilizador não está disponível")) {
                 System.out.println(str);
             }
 
