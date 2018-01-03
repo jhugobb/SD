@@ -31,7 +31,7 @@ public class ServerReader implements Runnable{
 
     @Override
     public void run() {
-        String response=null;
+        String response;
         while ( (response = readLine()) !=null ) {
             try {
                 if (player == null || (player != null && !player.getIsPlaying()))

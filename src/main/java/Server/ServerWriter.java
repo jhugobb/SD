@@ -10,7 +10,7 @@ public class ServerWriter implements Runnable{
     private Hub hub;
     private BufferedWriter out;
 
-    public ServerWriter(Hub hub, Socket client) throws IOException {
+    ServerWriter(Hub hub, Socket client) throws IOException {
         this.hub = hub;
         this.out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
     }
