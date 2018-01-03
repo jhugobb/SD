@@ -119,7 +119,7 @@ public class Menu {
                 "* 08 - Mr T                18 - Gambit        28 - Joker        *   "+RED+"[RED]   "+ getChoice(8)+RESET+"\n"+
                 "* "+RED+"09 - R35"+RESET+"                 19 - Scanlan       29 - The Flash    *   "+RED+"[RED]   "+ getChoice(9)+RESET+"\n"+
                 "* 10 - Mario               20 - Papyrus       30 - Sonic        *   "+RED+"[RED]   "+ getChoice(10)+RESET+"\n"+
-                "*                          "+GREEN+"00 - RANDOM"+RESET+"                           *\n" +
+                "*                          "+GREEN+"00 - RANDOM"+RESET+"                          *\n" +
                 "*****************************************************************\n");
     }
 
@@ -132,6 +132,11 @@ public class Menu {
             }
         }else if (state==0 || state==1){
             while (choice <= -1 || choice >= 3) {
+                System.out.println("Escolha uma opção: ");
+                choice = readChoice();
+            }
+        } else if (state==3) {
+            while (choice==-1) {
                 System.out.println("Escolha uma opção: ");
                 choice = readChoice();
             }
