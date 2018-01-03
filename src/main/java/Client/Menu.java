@@ -145,7 +145,7 @@ public class Menu {
     }
 
     private Integer readChoice() {
-        int mode=-1;
+        int mode;
         try {
             mode = Integer.parseInt(input.nextLine());
         } catch (NumberFormatException e) {

@@ -2,7 +2,7 @@ package bot;
 
 public class correBot {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Thread thread[] = new Thread[1000];
 
         for(int i=0; i<1000;i++){

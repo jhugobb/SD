@@ -140,8 +140,4 @@ public class Engine {
             playerLock.unlock();
         }
     }
-
-    // engine -> login, logout, signUp, queue, criar matches, por matches a correr
-    // match -> escrever para os hubs.
-
 }

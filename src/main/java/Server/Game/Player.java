@@ -19,7 +19,7 @@ public class Player implements Serializable{
     private Hub gameHub;
     private Lock playerLock;
 
-    public Player(String username, String password) {
+    Player(String username, String password) {
         this.username = username;
         this.password = password;
         this.rank = 0;
@@ -37,24 +37,8 @@ public class Player implements Serializable{
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Integer getRank() {
         return rank;
-    }
-
-    public Double getWins() {
-        return wins;
     }
 
     public void setGameOutcome(Boolean outcome) { //true in case of win, false otherwise
@@ -68,10 +52,6 @@ public class Player implements Serializable{
         Double ratio = this.wins / totalGames;
         ratio*=10;
         this.rank = ratio.intValue();
-    }
-
-    public Double getLosses() {
-        return losses;
     }
 
     public Boolean auth(String password) {

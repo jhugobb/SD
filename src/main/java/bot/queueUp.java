@@ -10,13 +10,13 @@ public class queueUp implements Runnable{
     private String password;
     private BufferedWriter out;
 
-    public queueUp(Integer username, Integer champ) {
+    queueUp(Integer username, Integer champ) {
         this.champ = champ;
         this.username = username.toString();
         this.password = champ.toString();
     }
 
-    public void start(String hostname, Integer porto){
+    private void start(String hostname, Integer porto){
 
         try {
             Socket socket = new Socket(hostname, porto);
@@ -25,7 +25,7 @@ public class queueUp implements Runnable{
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            String str=null;
+            String str;
             send("SIGNUP "+username+" "+password);
             while((str = in.readLine()) != null && !str.equals("SIGNEDUP") && !str.equals("O nome de utilizador não está disponível")) {
                 System.out.println(str);
@@ -61,7 +61,7 @@ public class queueUp implements Runnable{
         }
     }
 
-    public void send(String message) throws IOException {
+    private void send(String message) throws IOException {
         out.write(message);
         out.newLine();
         out.flush();
