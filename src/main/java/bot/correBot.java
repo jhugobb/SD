@@ -6,7 +6,7 @@ public class correBot {
         Thread thread[] = new Thread[10];
 
         for(int i=0; i<10;i++){
-            thread[i] = new Thread(new queueUp(i,1));
+            thread[i] = new Thread(new queueUp(i,i));
         }
 
         for(int i=0; i<10;i++){
