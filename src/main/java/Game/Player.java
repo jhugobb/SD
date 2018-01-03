@@ -143,6 +143,6 @@ public class Player implements Serializable{
 
     @Override
     public String toString() {
-        return username + "; wins: " + wins.toString() + " losses: " + losses.toString() + " rank: " + rank.toString();
+        return username + " " + rank.toString() + " " + wins.toString() + " " + losses.toString();
     }
 }
