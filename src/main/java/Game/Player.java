@@ -22,7 +22,7 @@ public class Player implements Serializable{
     public Player(String username, String password) {
         this.username = username;
         this.password = password;
-        this.rank = 5;
+        this.rank = 0;
         this.wins = 0.0;
         this.losses = 0.0;
         this.isInQueue = false;
