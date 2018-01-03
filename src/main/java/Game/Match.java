@@ -18,8 +18,7 @@ public class Match implements Runnable{
     private Map<String,Integer> champs;
     private Thread timer;
 
-    Match(Integer id, Set<Player> players, Engine engine) {
-        this.id = id;
+    Match( Set<Player> players, Engine engine) {
         this.engine = engine;
         this.blue = new HashSet<>();
         this.red = new HashSet<>();

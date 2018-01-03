@@ -15,20 +15,16 @@ import java.util.stream.Stream;
 
 public class Engine {
     private HashMap<Integer, Set<String>> queue;
-    private HashMap<Integer,Match> matches;
     private HashMap<String,Player> players;
     private Lock playerLock;
-    private Lock gameLock;
     private Lock queueLock;
 
     public Engine() {
         this.playerLock = new ReentrantLock();
-        this.gameLock = new ReentrantLock();
         this.queueLock = new ReentrantLock();
         this.queue = new HashMap<>();
         for (int i = 0; i < 10; i++)
             this.queue.put(i, new HashSet<>());
-        this.matches = new HashMap<>();
         this.players = new HashMap<>();
    }
 
@@ -86,16 +82,9 @@ public class Engine {
             } finally {
                 playerLock.unlock();
             }
-            gameLock.lock();
-            try {
-                Match m = new Match(matches.size()+1, players, this);
-                this.matches.put(matches.size(), m);
-                Thread t = new Thread(m);
-                t.start();
-            } finally {
-                gameLock.unlock();
-            }
-
+            Match m = new Match(players, this);
+            Thread t = new Thread(m);
+            t.start();
         } else {
             playerLock.lock();
             try {
