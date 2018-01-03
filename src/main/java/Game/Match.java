@@ -3,6 +3,8 @@ package Game;
 import Server.Hub;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Match implements Runnable{
     private Integer id;
@@ -26,7 +28,7 @@ public class Match implements Runnable{
         this.champs = new TreeMap<>();
         int i = 0;
         for(Player player : players){
-            if (i<1){
+            if (i<5){
                 blue.add(player);
 
             }else red.add(player);
@@ -66,6 +68,12 @@ public class Match implements Runnable{
         return  ans.toString();
     }
 
+    private Integer randomChampion(){
+        List<Integer> range = IntStream.rangeClosed(1, 30).boxed().collect(Collectors.toList());
+        range.removeIf(c -> champs.containsValue(c));
+        return range.get(new Random().nextInt(range.size()));
+    }
+
     private void champSelect() {
         timer.start();
         while(gameHub.isValid()){
@@ -74,8 +82,9 @@ public class Match implements Runnable{
                 String[] info = msg.split(" ");
                 if (info[0].equals("CHOOSE")) {
                     Integer hero = Integer.parseInt(info[1]);
-                    if (hero < 1 || hero > 30) playersHub.get(info[2]).write("INVALID");
+                    if (hero < 0 || hero > 30) playersHub.get(info[2]).write("INVALID");
                     else if (!isChosen(hero)) {
+                        if(hero.equals(0)) hero = randomChampion();
                         String answer = this.answer(info[2], hero);
                         playersHub.values().forEach(p -> p.write(answer));
                     } else {
@@ -98,6 +107,17 @@ public class Match implements Runnable{
         playersHub.values().forEach(hub -> hub.write(message));
     }
 
+    private void validateMatch(){
+        if (isChosen(-1)){
+            handleDodge(blue);
+            handleDodge(red);
+            playersHub.values().forEach(hub -> hub.write("DODGE"));
+        } else {
+            getWinner();
+            notifyClients(false);
+        }
+    }
+
     private void handleDodge(Set<Player> team) {
         team.forEach(p -> {
             p.setPlaying(false);
@@ -113,14 +133,7 @@ public class Match implements Runnable{
     public void run() {
         notifyClients(true);
         champSelect();
-        if (isChosen(-1)){
-            handleDodge(blue);
-            handleDodge(red);
-            playersHub.values().forEach(hub -> hub.write("DODGE"));
-        } else {
-            getWinner();
-            notifyClients(false);
-        }
+        validateMatch();
         terminate();
     }
 }
