@@ -63,6 +63,12 @@ public class Engine {
         Integer rank = player.getRank();
         if (rank == 10) rank--;
         Set<String> playersID = null;
+        playerLock.lock();
+        try {
+            player.queueUp();
+        } finally {
+            playerLock.unlock();
+        }
         queueLock.lock();
         try {
             Set<String> rankQueue = this.queue.get(rank);
@@ -77,21 +83,14 @@ public class Engine {
             playerLock.lock();
             Set<Player> players;
             try {
-                players = playersID.stream().map(p -> this.players.get(p)).collect(Collectors.toSet());
                 this.deQueuePlayers(playersID);
+                players = playersID.stream().map(p -> this.players.get(p)).collect(Collectors.toSet());
             } finally {
                 playerLock.unlock();
             }
             Match m = new Match(players, this);
             Thread t = new Thread(m);
             t.start();
-        } else {
-            playerLock.lock();
-            try {
-                player.queueUp();
-            } finally {
-                playerLock.unlock();
-            }
         }
         return "QUEUED-UP";
     }
