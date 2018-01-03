@@ -17,7 +17,7 @@ public class Player implements Serializable{
     private Boolean isPlaying;
     private Hub playerHub;
     private Hub gameHub;
-    private Lock playingLock;
+    private Lock playerLock;
 
     public Player(String username, String password) {
         this.username = username;
@@ -30,7 +30,7 @@ public class Player implements Serializable{
         this.isPlaying = false;
         this.playerHub = null;
         this.gameHub = null;
-        this.playingLock = new ReentrantLock();
+        this.playerLock = new ReentrantLock();
     }
 
     public String getUsername() {
@@ -95,15 +95,30 @@ public class Player implements Serializable{
     }
 
     public void queueUp() {
-        this.isInQueue = true;
+        playerLock.lock();
+        try {
+            this.isInQueue = true;
+        } finally {
+            playerLock.unlock();
+        }
     }
 
     public void dequeue() {
-        this.isInQueue = false;
+        playerLock.lock();
+        try {
+            this.isInQueue = false;
+        } finally {
+            playerLock.unlock();
+        }
     }
 
     public Boolean isInQueue() {
-        return isInQueue;
+        playerLock.lock();
+        try {
+            return isInQueue;
+        }finally {
+            playerLock.unlock();
+        }
     }
 
     public void login() {
@@ -120,20 +135,20 @@ public class Player implements Serializable{
     }
 
     public void setPlaying(Boolean status) {
-        playingLock.lock();
+        playerLock.lock();
         try {
             this.isPlaying = status;
         } finally {
-            playingLock.unlock();
+            playerLock.unlock();
         }
     }
 
     public Boolean getIsPlaying() {
-        playingLock.lock();
+        playerLock.lock();
         try {
             return isPlaying;
         } finally {
-            playingLock.unlock();
+            playerLock.unlock();
         }
     }
 

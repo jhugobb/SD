@@ -37,9 +37,6 @@ public class queueUp implements Runnable{
             }
 
             send("QUEUE");
-            while((str = in.readLine())!= null && !str.equals("QUEUED-UP")){
-                System.out.println(str);
-            }
 
             while((str = in.readLine())!= null && !str.equals("START")){
                 System.out.println(str);
