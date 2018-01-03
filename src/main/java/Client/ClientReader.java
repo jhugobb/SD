@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class ClientReader implements Runnable{
+    private static final String RESET = "\u001B[0m";
+    private static final String RED = "\u001B[31m";
+    private static final String YELLOW = "\u001B[33m";
     private BufferedReader input;
     private Menu menu;
 
@@ -28,7 +31,7 @@ public class ClientReader implements Runnable{
         String[] info = response.split(" ", 2);
         switch (info[0].toUpperCase()) {
             case("DENIED"):
-                System.out.println("User not authenticated");
+                System.out.println(RED +"User not authenticated" + RESET);
                 menu.show();
                 break;
             case ("LOGGEDIN"):
@@ -40,11 +43,11 @@ public class ClientReader implements Runnable{
                 menu.show();
                 break;
             case("TAKEN"):
-                System.out.println("Champion already picked");
+                System.out.println(RED + "Champion already picked" + RESET);
                 menu.show();
                 break;
             case("INVALID"):
-                System.out.println("Invalid request");
+                System.out.println(RED +"Invalid request"+ RESET);
                 menu.show();
                 break;
             case("BYEQUEUE"):
@@ -53,13 +56,13 @@ public class ClientReader implements Runnable{
                 break;
             case("DODGE"):
                 if (menu.getState()==3) {
-                    System.out.println("TIME OUT - Someone forgot to pick their Hero!");
+                    System.out.println(RED + "TIME OUT - You forgot to pick your Hero!" + RESET);
                     menu.setState(1);
                     menu.show();
                 }
                 break;
             case("DOUBLE"):
-                System.out.println("This user is already authenticated elsewhere");
+                System.out.println(RED + "This user is already authenticated elsewhere" + RESET);
                 menu.show();
                 break;
             case("INFO"):
@@ -67,7 +70,7 @@ public class ClientReader implements Runnable{
                 break;
             case("QUEUED-UP"):
                 if (menu.getState()==3) {
-                    System.out.println("[Match restarted because some players didn't choose their champions]");
+                    System.out.println(YELLOW +"Match restarted because some players didn't choose their champions" + RESET);
                 }
                 menu.setState(2);
                 menu.show();
