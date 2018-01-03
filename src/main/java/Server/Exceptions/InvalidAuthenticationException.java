@@ -1,4 +1,4 @@
-package Exceptions;
+package Server.Exceptions;
 
 public class InvalidAuthenticationException extends Exception {
     public InvalidAuthenticationException() {
