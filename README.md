@@ -26,7 +26,7 @@ Tests? Oh right. Try running the Bot. Pump those numbers to 4000 threads and wat
 Lint was on vacation, so were we up to 3 days before the deadline, soooo, no lint.
 
 ### Future work
-[] Deploying lint on this sucker
+- [ ] Deploying lint on this sucker
 
 ## Built With
 
